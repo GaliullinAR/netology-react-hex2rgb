@@ -1,24 +1,34 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState, useRef } from 'react';
 import './App.css';
+import HexToRgb from './components/HexToRgb';
+import { validateColor } from './validateColor';
+import hexRgb from 'hex-rgb';
+
+
 
 function App() {
+  const [value, setValue] = useState('');
+  const currentInput = useRef(null);
+
+  const onChangeInput = (e: React.ChangeEvent<any>):void => {
+    e.preventDefault();
+
+    let result;
+    // const color = e.target.value.length === 7 ? hexRgb(e.target.value, { format: 'array' }) : [];
+    try {
+      result = e.target.value.length === 7 ? hexRgb(e.target.value, { format: 'array' }) : [];
+      let color = result.length > 0 ? `rgba(${result.join(',')})` : 'Ошибка!';
+      setValue(color);
+    } catch (error) {
+      result = 'Ошибка!';
+      setValue(result);
+    }
+    
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <HexToRgb value={value} on={onChangeInput} reference={ currentInput } />
     </div>
   );
 }
